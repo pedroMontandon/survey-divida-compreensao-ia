@@ -1,0 +1,6 @@
+# Dados brutos ficam fora do repositório público (LGPD). Use repositório privado ou envie pelo upload do dashboard.
+dados/*.csv
+dados/*.xlsx
+tests/DADOS_FICTICIOS_teste.csv
+__pycache__/
+.streamlit/secrets.toml
