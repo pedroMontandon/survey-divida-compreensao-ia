@@ -8,7 +8,9 @@ Uso (dentro de dashboard/):
 
     python codificacao.py kappa
         Calcula o kappa de Cohen nas primeiras 20 respostas (protocolo), por código e geral,
-        lista as divergências e cria dados/consenso.xlsx já preenchido onde houve concordância.
+        e cria dados/consenso.xlsx já preenchido onde houve concordância. Aplica a regra do grupo
+        (OUTRO contra um código específico -> vale o código específico) e lista as demais
+        divergências na aba 'divergencias'. Não sobrescreve um consenso existente sem --refazer.
 
     python codificacao.py final
         Lê dados/consenso.xlsx (divergências resolvidas pelo grupo) e grava codificacao_abertas.csv
@@ -85,23 +87,54 @@ def kappa() -> None:
     print(f"\nKappa geral (todas as decisões código × resposta): {geral:.2f}")
     print("Referência (Landis e Koch): < 0,40 fraca; 0,41–0,60 moderada; 0,61–0,80 substancial; > 0,80 quase perfeita.")
 
+    if CONSENSO.exists() and "--refazer" not in sys.argv:
+        print(f"\n{CONSENSO.name} já existe e não foi alterado (pode conter decisões do grupo). "
+              "Para recriá-lo do zero, rode 'python codificacao.py kappa --refazer'.")
+        return
+
     consenso = c1[["resposta"]].copy()
-    divergencias = []
     for c in CODIGOS:
-        iguais = c1[c] == c2[c]
-        consenso[c] = c1[c].where(iguais).map({1: "1", 0: ""}).fillna("DIVERGE")
-        divergencias += [(i, c) for i in c1.index[~iguais]]
+        consenso[c] = c1[c].where(c1[c] == c2[c]).map({1: "1", 0: ""}).fillna("DIVERGE")
+
+    # Regra de consenso do grupo: OUTRO contra um código específico -> vale o código específico
+    automaticas = []
+    for i in consenso.index[consenso["OUTRO"] == "DIVERGE"]:
+        marcou_outro, outro_lado = (c1, c2) if c1.loc[i, "OUTRO"] == 1 else (c2, c1)
+        especificos = [c for c in CODIGOS[:-1]
+                       if consenso.loc[i, c] == "DIVERGE" and outro_lado.loc[i, c] == 1
+                       and marcou_outro.loc[i, c] == 0]
+        if especificos:
+            consenso.loc[i, "OUTRO"] = ""
+            for c in especificos:
+                consenso.loc[i, c] = "1"
+            automaticas.append((i, especificos))
+
+    linhas = []
+    for i in consenso.index:
+        for c in CODIGOS:
+            if consenso.loc[i, c] == "DIVERGE":
+                linhas.append({"ID": i, "código": c, "codificador 1": int(c1.loc[i, c]),
+                               "codificador 2": int(c2.loc[i, c]), "resposta": c1.loc[i, "resposta"],
+                               "observação 1": c1.loc[i, "observacao"],
+                               "observação 2": c2.loc[i, "observacao"]})
     consenso["observacao"] = ""
-    consenso.reset_index().to_excel(CONSENSO, index=False)
-    print(f"\n{len(divergencias)} divergências (marcadas como DIVERGE em {CONSENSO.name}):")
-    for i, c in divergencias:
-        print(f"  {i}: {c}")
+    with pd.ExcelWriter(CONSENSO) as xl:
+        consenso.reset_index().to_excel(xl, sheet_name="consenso", index=False)
+        pd.DataFrame(linhas).to_excel(xl, sheet_name="divergencias", index=False)
+
+    print("\nRegra OUTRO × código específico aplicada em:")
+    for i, cs in automaticas:
+        print(f"  {i}: OUTRO removido, vale {', '.join(cs)}")
+    print(f"\n{len(linhas)} divergências para o grupo decidir (DIVERGE na aba 'consenso'; "
+          f"detalhes na aba 'divergencias' de {CONSENSO.name}):")
+    for r in linhas:
+        print(f"  {r['ID']}: {r['código']} (cod. 1 = {r['codificador 1']}, cod. 2 = {r['codificador 2']})")
 
 
 def final() -> None:
     if not CONSENSO.exists():
         sys.exit(f"{CONSENSO.name} não existe: rode primeiro 'python codificacao.py kappa'.")
-    df = pd.read_excel(CONSENSO, dtype=str).fillna("")
+    df = pd.read_excel(CONSENSO, sheet_name="consenso", dtype=str).fillna("")
     pendentes = [(r.ID, c) for r in df.itertuples() for c in CODIGOS if getattr(r, c).strip() == "DIVERGE"]
     if pendentes:
         sys.exit(f"Ainda há {len(pendentes)} divergências sem consenso, por exemplo {pendentes[0]}.")

@@ -26,7 +26,12 @@ O protocolo permite incluir novos códigos. Ao ler as respostas, dois temas apar
 
 | Código | Definição | Aplica quando a resposta… |
 | --- | --- | --- |
-| `PAPEL_SATISFACAO` | Mudança de papel ou de satisfação com o trabalho | fala de mudança no que a pessoa faz (programar menos, pensar mais no produto ou na arquitetura) ou de gostar mais ou menos do trabalho |
+| `PAPEL_SATISFACAO` | Mudança de papel | diz que o foco do trabalho da pessoa saiu do código e foi para outra camada (produto, arquitetura, planejamento ou gestão), ou o contrário; a satisfação com o trabalho só conta quando vem junto com essa mudança de foco. Não aplica a quem só diz gostar ou não de programar, nem a medo de ser substituído |
 | `QUALIDADE_EQUIPE` | Efeitos na qualidade ou no processo da equipe | fala de erros, qualidade, PRs ou comportamento de outras pessoas da equipe ou da empresa, e não da própria compreensão |
 
 Qualquer código incluído depois do início da codificação deve ser registrado em `desvios.md`.
+
+## Regras de consenso
+
+- **`OUTRO` contra outro código:** se um codificador marcou `OUTRO` e o outro marcou um código específico para a mesma resposta, vale o código específico, e `OUTRO` sai. O script aplica essa regra sozinho ao gerar `consenso.xlsx`.
+- **Demais divergências:** o grupo decide uma a uma, consultando a aba `divergencias` de `consenso.xlsx`, que mostra o texto, o que cada codificador marcou e as observações de cada um.
