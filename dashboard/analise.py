@@ -62,11 +62,15 @@ def mapear_colunas(bruto: pd.DataFrame) -> tuple[pd.DataFrame, bool]:
 
 
 def _parse_datas(serie: pd.Series) -> pd.Series:
+    # XLSX já traz datas (com milissegundos); CSV traz texto "dd/mm/aaaa hh:mm:ss"
+    if pd.api.types.is_datetime64_any_dtype(serie):
+        return pd.to_datetime(serie, errors="coerce").astype("datetime64[us]")
     s = serie.astype(str).str.strip()
-    br = pd.to_datetime(s, format="%d/%m/%Y %H:%M:%S", errors="coerce")
+    br = pd.to_datetime(s, format="%d/%m/%Y %H:%M:%S", errors="coerce").astype("datetime64[us]")
     resto = br.isna()
     if resto.any():
-        br[resto] = pd.to_datetime(s[resto], errors="coerce", dayfirst=True)
+        outros = pd.to_datetime(s[resto], errors="coerce", dayfirst=True, format="mixed")
+        br.loc[resto] = outros.astype("datetime64[us]")
     return br
 
 

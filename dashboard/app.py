@@ -424,16 +424,17 @@ Testes não paramétricos, α = 0,05, correção de Holm por família, tamanho d
     if faltantes:
         auto.append(f"Colunas esperadas ausentes na exportação: {', '.join(faltantes)}.")
     if n_val < Q.META_VALIDAS:
+        margem = f"{A.margem_erro(.5, max(n_val, 1)) * 100:.1f}".replace(".", ",")
         auto.append(f"Amostra válida ({n_val}) abaixo da meta de {Q.META_VALIDAS}; "
-                    f"margem de erro no pior caso ±{A.margem_erro(.5, max(n_val, 1)) * 100:.1f} p.p. "
-                    f"em vez de ±9,8 p.p.")
+                    f"margem de erro no pior caso ±{margem} p.p. em vez de ±9,8 p.p.")
     datas = todos.loc[todos["VALIDA"], "DATA_HORA"].dropna()
     if len(datas) and datas.max() > pd.Timestamp(Q.DATA_FIM_COLETA) + pd.Timedelta(days=1):
         auto.append(f"Respostas válidas após a data final prevista (última: {datas.max():%d/%m/%Y}).")
     for chave, cfg in Q.CONSTRUTOS.items():
         a = A.alpha_cronbach(v[[f"r_{i}" for i in cfg["itens"]]])["alfa"]
         if not np.isnan(a) and a < 0.60:
-            auto.append(f"Alfa de {chave} = {a:.2f} < 0,60: índice substituído pela análise item a item.")
+            auto.append(f"Alfa de {chave} = {a:.2f}".replace(".", ",")
+                        + " < 0,60: índice substituído pela análise item a item.")
     for r in A.testar_hipoteses(v):
         if "unidos" in r.detalhe:
             auto.append(f"{r.id}: {r.detalhe}.")
