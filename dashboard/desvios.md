@@ -15,4 +15,4 @@ Desvios em relação ao protocolo registrado na Parte 1 (commit de 11/11/2026). 
 
 **Mitigação e forma de relato:** os resultados são apresentados como exploratórios, com a margem de erro em destaque; o perfil da amostra mostra a distribuição das respostas ao longo da coleta; e as conclusões não são generalizadas para todos os desenvolvedores.
 
-**Concordância da codificação das respostas abertas:** kappa de Cohen = [PREENCHER]. O protocolo previa calcular o kappa nas primeiras 20 respostas abertas; como há 21 respostas abertas no total, os dois codificadores codificam todas.
+**Concordância da codificação das respostas abertas:** kappa de Cohen geral = [PREENCHER] nas primeiras 20 respostas (R002 a R049), calculado por `codificacao.py kappa` (o kappa por código fica na saída do script). Como há só 21 respostas abertas, os dois codificadores codificaram as 21 de forma independente, em vez de codificar a restante só depois do consenso, como previa o protocolo; o kappa continua calculado nas primeiras 20. Códigos usados: os seis do livro de códigos pré-registrado [e os emergentes PAPEL_SATISFACAO e QUALIDADE_EQUIPE — apagar se não forem usados].
