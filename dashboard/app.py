@@ -330,7 +330,8 @@ def pagina_qps(v: pd.DataFrame, filtrado: bool):
 
     with abas[3]:
         st.markdown("**Experiência e práticas de verificação estão associadas a dívida de compreensão diferente?**")
-        for k in ("H4a", "H4b"):
+        h4b = [k for k in res if k == "H4b" or k.startswith("H4b-")]
+        for k in ["H4a"] + h4b:
             if k in res:
                 cartao_teste(res[k])
         a, b = st.columns(2)
@@ -343,8 +344,15 @@ def pagina_qps(v: pd.DataFrame, filtrado: bool):
                 d["p"] = d["p"].map(A.formatar_p); d["p (Holm)"] = d["p (Holm)"].map(A.formatar_p)
                 st.dataframe(d.round(3), hide_index=True, width="stretch")
         with b:
-            dispersao(v, "PV", "DC", "Práticas de verificação × dívida de compreensão",
-                      "Índice PV (1–5)", "Índice DC (1–5)")
+            if "H4b" in res or not h4b:
+                dispersao(v, "PV", "DC", "Práticas de verificação × dívida de compreensão",
+                          "Índice PV (1–5)", "Índice DC (1–5)")
+            else:
+                st.caption("O índice PV não atingiu α ≥ 0,60; cada item é analisado separadamente.")
+                for k in h4b:
+                    item = res[k].extra["item"]
+                    dispersao(v, f"s_{item}", "DC", f"{item} × dívida de compreensão",
+                              f"{item}: {Q.ROTULOS[item]} (1–5)", "Índice DC (1–5)")
 
     with abas[4]:
         st.caption("Análises exploratórias: geram hipóteses, não confirmam.")

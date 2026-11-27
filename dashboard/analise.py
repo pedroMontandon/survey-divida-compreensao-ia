@@ -165,6 +165,9 @@ def alpha_cronbach(itens: pd.DataFrame) -> dict:
     return {"alfa": _alfa(x), "n": n, "itens": pd.DataFrame(linhas)}
 
 
+ALFA_MINIMO = 0.60   # abaixo disso o índice não é usado (protocolo, seção 5)
+
+
 def classificar_alfa(a: float) -> str:
     if np.isnan(a):
         return "não calculável"
@@ -373,12 +376,35 @@ def testar_hipoteses(df: pd.DataFrame) -> list[Resultado]:
                                          f"{r['mediana']:.1f}; {r['n'] - r['n_sem_empate']} respostas "
                                          f"'não mudou' ficam fora do teste.", extra=r))
 
+    def alfa_baixo(col):
+        """Regra pré-registrada: índice com α < 0,60 não é usado; os itens são analisados um a um."""
+        if col not in Q.CONSTRUTOS:
+            return None
+        a = alpha_cronbach(df[[f"r_{i}" for i in Q.CONSTRUTOS[col]["itens"]]])["alfa"]
+        return a if not np.isnan(a) and a < ALFA_MINIMO else None
+
     def add_spearman(id_, hip, x, y, familia="confirmatória"):
-        r = spearman(df[x], df[y])
-        if r:
-            res.append(Resultado(id_, hip, "Correlação de Spearman", r["n"], f"ρ = {r['rho']:.3f}",
-                                 r["p"], "ρ", r["rho"], rotulo_efeito(r["rho"]), familia,
-                                 detalhe=f"IC 95% de ρ: [{r['ic'][0]:.2f}; {r['ic'][1]:.2f}]", extra=r))
+        trocado = next((c for c in (x, y) if alfa_baixo(c) is not None), None)
+        if trocado is None:
+            r = spearman(df[x], df[y])
+            if r:
+                res.append(Resultado(id_, hip, "Correlação de Spearman", r["n"], f"ρ = {r['rho']:.3f}",
+                                     r["p"], "ρ", r["rho"], rotulo_efeito(r["rho"]), familia,
+                                     detalhe=f"IC 95% de ρ: [{r['ic'][0]:.2f}; {r['ic'][1]:.2f}]", extra=r))
+            return
+        a = alfa_baixo(trocado)
+        for item in Q.CONSTRUTOS[trocado]["itens"]:
+            xi, yi = (f"s_{item}", y) if trocado == x else (x, f"s_{item}")
+            r = spearman(df[xi], df[yi])
+            if r:
+                res.append(Resultado(
+                    f"{id_}-{item}", f"{hip} — item {item}: {Q.ROTULOS[item]}",
+                    "Correlação de Spearman (por item)", r["n"], f"ρ = {r['rho']:.3f}", r["p"], "ρ",
+                    r["rho"], rotulo_efeito(r["rho"]), familia,
+                    detalhe=f"Índice {trocado} com α = {a:.2f} < 0,60: substituído pelos itens, com o "
+                            f"escore direto de cada um (regra pré-registrada). "
+                            f"IC 95% de ρ: [{r['ic'][0]:.2f}; {r['ic'][1]:.2f}]",
+                    extra={**r, "substitui": id_, "item": item}))
 
     def add_kruskal(id_, hip, valor, grupo, ordem, familia):
         rot, ordem2, unidos = unir_grupos_pequenos(df[grupo], ordem, Q.MIN_SEGMENTO)

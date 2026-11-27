@@ -14,6 +14,8 @@ Desvios em relação ao protocolo registrado na Parte 1 (commit de 11/11/2026). 
 - **Homogeneidade da amostra:** a maioria vem de um mesmo curso e de uma mesma rede de contatos, o que restringe ainda mais a generalização, já limitada pela amostragem por conveniência.
 - **Atenção menor:** 5 das 6 respostas descartadas na sessão de 26/11 erraram a pergunta de atenção (13% da sessão, contra nenhuma nas 12 respostas anteriores), o que sugere preenchimento mais rápido. As regras D3 e D4 removem os casos detectáveis, mas não os descuidos parciais.
 
+**Análise da QP4 (H4b):** o índice de práticas de verificação teve α = 0,41, abaixo de 0,60. Pela regra pré-registrada, o índice não foi usado e cada item (PV1, PV2, PV3) foi correlacionado com o índice DC. O protocolo não dizia como contar esses testes na correção de Holm; adotamos a opção mais conservadora, com os três na família confirmatória, que passou de 6 para 8 testes.
+
 **Mitigação e forma de relato:** os resultados são apresentados como exploratórios, com a margem de erro em destaque; o perfil da amostra mostra a distribuição das respostas ao longo da coleta; e as conclusões não são generalizadas para todos os desenvolvedores.
 
 **Concordância da codificação das respostas abertas:** kappa de Cohen geral = 0,62 (concordância substancial) nas primeiras 20 respostas (R002 a R049), calculado por `codificacao.py kappa`. Codificaram, à mão e de forma independente, Murilo Andrade e Pedro Luiz Nato. Kappa por código: PRODUTO_DOMINIO 0,90; VERIFICACAO 0,63; QUALIDADE_EQUIPE 0,62; GANHO_CODIGO 0,61; PERDA_COMPREENSAO 0,58; DEPENDENCIA 0,47; PAPEL_SATISFACAO e OUTRO 0,00.
