@@ -27,19 +27,20 @@ Antes da apresentação, apagar o formulário "Cópia de Uso de IA e conheciment
 
 ## 3. Capturas datadas da divulgação
 
-Uma captura por divulgação, com data e hora visíveis. Antes de guardar, cubra nomes, fotos e números de telefone de outras pessoas.
+Capturas do WhatsApp guardadas no Drive do grupo. No WhatsApp, o separador de data aparece **acima** das mensagens daquele dia; as datas abaixo foram lidas assim.
 
-| Data | Canal | Captura (arquivo no Drive) | Feita? |
+| Captura | Data e hora | Canal | Como a data aparece |
 | --- | --- | --- | --- |
-| 14/11 | LinkedIn dos integrantes | | |
-| 14/11 | Grupos de WhatsApp/Telegram | | |
-| 14/11 | Discord, Reddit r/brdev, TabNews | | |
-| 17/11 | Lembrete | | |
-| 20/11 | Lembrete | | |
-| 26/11 | Apresentação em sala (professor de outra disciplina) | | |
-| 26/11 | Convites diretos a profissionais | | |
+| 1 | Até 17/11, 23:06 | Conversa com o professor de outra disciplina, que se ofereceu para passar o link a alunos de graduação | Separador "18/11/2026" logo abaixo da mensagem: ela é do dia anterior ou antes |
+| 2 | 19/11, 18:54 | Grupo de WhatsApp sem alunos desta disciplina ("@all me ajudem… respondam esse quiz rapidinho") | Separador "19/11/2026" acima da mensagem |
+| 3 | Sem data visível, 20:11 | Grupo de WhatsApp ("Respondam") | Só o horário; a captura não mostra a data |
+| 4 | 26/11, 22:57 | Link repassado por um amigo do grupo a colegas do 6º período ("trabalho de uns amigos meus") | "Yesterday" em captura feita em 27/11 |
 
-Apaguem as linhas dos canais que não foram usados, e registrem em `dashboard/desvios.md` qualquer canal previsto que não tenha sido usado.
+**O que as capturas mostram e o que não mostram.** Uma captura não prova quem respondeu nem quando cada pessoa respondeu. Ela prova a partir de quando o link circulou em cada canal: nenhuma resposta daquele canal pode ser anterior à mensagem. É por isso que o enunciado pede capturas datadas.
+
+**Cruzamento com a exportação.** As respostas chegaram em 15/11 (1), 17/11 (9, entre 19:01 e 20:17), 19/11 (1, às 13:50) e 26/11 (39, entre 21:56 e 23:39). A concentração de 26/11 coincide com a captura 4 e com os convites diretos feitos na mesma noite; segundo o grupo, as primeiras respostas daquela noite (16 entre 22:44 e 23:06, a partir de antes do repasse das 22:57) vieram dos convites diretos, dos quais não há captura. A captura 2 (19/11) não foi seguida de respostas até 26/11.
+
+Canais previstos no protocolo sem captura: LinkedIn, Discord, Reddit r/brdev e TabNews. Algumas respostas marcaram LinkedIn (3) e "Discord, Reddit ou fóruns" (3) em P7; se houver publicações nesses canais, acrescentem as capturas, e se não houver, registrem em `dashboard/desvios.md` que esses canais não foram usados pelo grupo.
 
 ## 4. Linha do tempo (gerada pelo dashboard)
 
